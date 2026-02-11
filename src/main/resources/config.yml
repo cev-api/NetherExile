@@ -1,0 +1,56 @@
+# If the "dead" player stayed near their Nether entry point, revive them
+# 100 blocks away from the original death spot to reduce spawn-camping grief.
+near_entry_threshold_blocks: 64.0
+revive_offset_blocks: 100
+
+# Regeneration after revival
+regen_seconds: 30
+regen_amplifier: 1
+
+# If enabled, revived players are returned to their bed/respawn point (if valid) instead of death-based targeting.
+revive_to_bed_enabled: false
+
+# How many blocks around a dead player to extinguish when they try to use a portal
+portal_extinguish_radius: 4
+# When extinguishing portals, remove the entire connected portal region (like water would),
+# but cap the number of blocks to avoid lag on huge builds.
+portal_extinguish_max_blocks: 4096
+
+# Master toggle for the plugin's gameplay logic.
+# When disabled, NetherExile will not mark deaths / exile players / block portals / auto-break markers.
+netherexile_enabled: true
+
+# Player-facing messages (trap, revive, etc.)
+messages_enabled: true
+
+# Auto-break markers if nobody breaks the lodestone/head after this duration.
+autobreak_enabled: false
+# Supported suffixes: s, m, h, d (examples: 60s, 1m, 1h, 1d)
+autobreak_after: "1h"
+
+# Progressive auto-break: each time a player dies (and gets imprisoned), their auto-break timeout doubles
+# from whatever it was the previous time. Requires autobreak_enabled=true and a valid autobreak_after.
+autobreak_progressive_enabled: false
+# Optional cap for progressive doubling (set to 0/off to disable cap).
+autobreak_progressive_max: "off"
+
+# Skeleton mode: dead players are equipped with a skeleton skull when they spawn in the Nether.
+# The skull is named with death coordinates and time.
+skeleton_enabled: false
+
+# When choosing revive / nether-entry positions, stay at least this many blocks inside the WorldBorder.
+border_margin_blocks: 32.0
+
+# If enabled, a player's first death in the Nether will also start NetherExile (Nether -> Nether exile).
+# They will respawn at their last Nether portal entry location (Overworld -> Nether), and remain trapped until revived.
+nethernetherdeath_enabled: false
+
+# If enabled, lodestones can be "broken" for revival by shooting them with an arrow.
+breakwitharrow_enabled: false
+
+# If a dead player dies in the Nether, optionally add time to their auto-break revival timer.
+# This uses in-game time ticks (so it still only counts down while they are online).
+nether_death_penalty_enabled: false
+nether_death_penalty: "5m"
+# Optional cap for the remaining time after penalties (set to 0/off to disable cap).
+nether_death_max_remaining: "6h"

@@ -1,0 +1,22 @@
+name: NetherExile
+version: ${version}
+main: local.mimi.netherexile.NetherExilePlugin
+api-version: "1.21"
+author: Mimi
+description: Places a lodestone+head on death and exiles the player to the Nether until revived.
+
+commands:
+  netherexile:
+    description: NetherExile admin command.
+    usage: /netherexile <help|enable|disable|status|messages|bedreturn|skeleton|nethernetherdeath|breakwitharrow|revive|autobreak|progressive|netherpenalty> ...
+
+permissions:
+  netherexile.toggle:
+    description: Allows enabling/disabling NetherExile at runtime.
+    default: op
+  netherexile.revive:
+    description: Allows reviving dead players via command.
+    default: op
+  netherexile.autobreak:
+    description: Allows configuring auto-break markers.
+    default: op
