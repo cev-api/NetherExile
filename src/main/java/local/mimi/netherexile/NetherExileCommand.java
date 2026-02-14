@@ -39,20 +39,7 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
                 return handleToggle(sender, label, false);
             }
             case "status" -> {
-                info(sender, "enabled=" + deadService.isNetherExileEnabled());
-                info(sender, "messages_enabled=" + plugin.getConfig().getBoolean("messages_enabled", true)
-                    + " skeleton_enabled=" + plugin.getConfig().getBoolean("skeleton_enabled", false));
-                info(sender, "revive_to_bed_enabled=" + plugin.getConfig().getBoolean("revive_to_bed_enabled", false));
-                info(sender, "nethernetherdeath_enabled=" + plugin.getConfig().getBoolean("nethernetherdeath_enabled", false)
-                    + " breakwitharrow_enabled=" + plugin.getConfig().getBoolean("breakwitharrow_enabled", false));
-                info(sender, "autobreak_enabled=" + plugin.getConfig().getBoolean("autobreak_enabled", false)
-                    + " autobreak_after=" + plugin.getConfig().getString("autobreak_after", "1h")
-                    + " progressive_enabled=" + plugin.getConfig().getBoolean("autobreak_progressive_enabled", false)
-                    + " progressive_max=" + plugin.getConfig().getString("autobreak_progressive_max", "off"));
-                info(sender, "nether_death_penalty_enabled=" + plugin.getConfig().getBoolean("nether_death_penalty_enabled", false)
-                    + " nether_death_penalty=" + plugin.getConfig().getString("nether_death_penalty", "5m")
-                    + " nether_death_max_remaining=" + plugin.getConfig().getString("nether_death_max_remaining", "6h"));
-                info(sender, "border_margin_blocks=" + plugin.getConfig().getDouble("border_margin_blocks", 32.0));
+                sendStatus(sender);
                 return true;
             }
             case "help" -> {
@@ -182,8 +169,8 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            err(sender, "Usage: /" + label + " autobreak <status|on|off|set> [duration]");
-            info(sender, "Examples: /" + label + " autobreak on 1h | /" + label + " autobreak set 30m | /" + label + " autobreak off");
+            info(sender, "autobreak_enabled=" + plugin.getConfig().getBoolean("autobreak_enabled", false));
+            info(sender, "autobreak_after=" + plugin.getConfig().getString("autobreak_after", "1h"));
             return true;
         }
 
@@ -215,8 +202,7 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
             }
             case "set" -> {
                 if (args.length < 3) {
-                    err(sender, "Usage: /" + label + " autobreak set <duration>");
-                    info(sender, "Examples: 60s, 1m, 1h, 1d");
+                    info(sender, "autobreak_after=" + plugin.getConfig().getString("autobreak_after", "1h"));
                     return true;
                 }
                 plugin.getConfig().set("autobreak_after", args[2]);
@@ -372,8 +358,13 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
             err(sender, "No permission.");
             return true;
         }
-        if (args.length != 2) {
+        if (args.length < 2) {
+            info(sender, key + "=" + plugin.getConfig().getBoolean(key, false));
+            return true;
+        }
+        if (args.length > 2 || (!args[1].equalsIgnoreCase("on") && !args[1].equalsIgnoreCase("off"))) {
             err(sender, "Usage: /" + label + " " + args[0] + " <on|off>");
+            info(sender, key + "=" + plugin.getConfig().getBoolean(key, false));
             return true;
         }
         boolean enabled = args[1].equalsIgnoreCase("on");
@@ -393,7 +384,9 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            err(sender, "Usage: /" + label + " netherpenalty <status|on|off|set|cap> [value]");
+            info(sender, "nether_death_penalty_enabled=" + plugin.getConfig().getBoolean("nether_death_penalty_enabled", false));
+            info(sender, "nether_death_penalty=" + plugin.getConfig().getString("nether_death_penalty", "5m"));
+            info(sender, "nether_death_max_remaining=" + plugin.getConfig().getString("nether_death_max_remaining", "6h"));
             return true;
         }
 
@@ -419,8 +412,7 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
             }
             case "set" -> {
                 if (args.length < 3) {
-                    err(sender, "Usage: /" + label + " penalty set <duration>");
-                    info(sender, "Examples: 60s, 5m, 1h");
+                    info(sender, "nether_death_penalty=" + plugin.getConfig().getString("nether_death_penalty", "5m"));
                     return true;
                 }
                 plugin.getConfig().set("nether_death_penalty", args[2]);
@@ -430,8 +422,7 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
             }
             case "cap" -> {
                 if (args.length < 3) {
-                    err(sender, "Usage: /" + label + " penalty cap <duration|off>");
-                    info(sender, "Examples: 6h, 1d, off");
+                    info(sender, "nether_death_max_remaining=" + plugin.getConfig().getString("nether_death_max_remaining", "6h"));
                     return true;
                 }
                 plugin.getConfig().set("nether_death_max_remaining", args[2]);
@@ -451,9 +442,12 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
             err(sender, "No permission.");
             return true;
         }
-        if (args.length != 2) {
+        if (args.length < 2) {
+            info(sender, "autobreak_progressive_max=" + plugin.getConfig().getString("autobreak_progressive_max", "off"));
+            return true;
+        }
+        if (args.length > 2) {
             err(sender, "Usage: /" + label + " progressivecap <duration|off>");
-            info(sender, "Examples: 6h, 12h, 1d, off");
             return true;
         }
 
@@ -469,7 +463,8 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 2) {
-            err(sender, "Usage: /" + label + " progressive <status|on|off|cap> [value]");
+            info(sender, "autobreak_progressive_enabled=" + plugin.getConfig().getBoolean("autobreak_progressive_enabled", false));
+            info(sender, "autobreak_progressive_max=" + plugin.getConfig().getString("autobreak_progressive_max", "off"));
             return true;
         }
 
@@ -501,8 +496,7 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
             }
             case "cap" -> {
                 if (args.length < 3) {
-                    err(sender, "Usage: /" + label + " progressive cap <duration|off>");
-                    info(sender, "Examples: 6h, 12h, 1d, off");
+                    info(sender, "autobreak_progressive_max=" + plugin.getConfig().getString("autobreak_progressive_max", "off"));
                     return true;
                 }
                 plugin.getConfig().set("autobreak_progressive_max", args[2]);
@@ -515,5 +509,57 @@ final class NetherExileCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
         }
+    }
+
+    private void sendStatus(CommandSender sender) {
+        statusHeader(sender, "Core");
+        statusBool(sender, "netherexile_enabled", deadService.isNetherExileEnabled());
+        statusBool(sender, "messages_enabled", plugin.getConfig().getBoolean("messages_enabled", true));
+        statusBool(sender, "revive_to_bed_enabled", plugin.getConfig().getBoolean("revive_to_bed_enabled", false));
+        statusBool(sender, "skeleton_enabled", plugin.getConfig().getBoolean("skeleton_enabled", false));
+        statusBool(sender, "nethernetherdeath_enabled", plugin.getConfig().getBoolean("nethernetherdeath_enabled", false));
+        statusBool(sender, "breakwitharrow_enabled", plugin.getConfig().getBoolean("breakwitharrow_enabled", false));
+
+        statusHeader(sender, "Auto-break");
+        statusBool(sender, "autobreak_enabled", plugin.getConfig().getBoolean("autobreak_enabled", false));
+        statusText(sender, "autobreak_after", plugin.getConfig().getString("autobreak_after", "1h"));
+        statusBool(sender, "autobreak_progressive_enabled", plugin.getConfig().getBoolean("autobreak_progressive_enabled", false));
+        statusText(sender, "autobreak_progressive_max", plugin.getConfig().getString("autobreak_progressive_max", "off"));
+
+        statusHeader(sender, "Nether Penalty");
+        statusBool(sender, "nether_death_penalty_enabled", plugin.getConfig().getBoolean("nether_death_penalty_enabled", false));
+        statusText(sender, "nether_death_penalty", plugin.getConfig().getString("nether_death_penalty", "5m"));
+        statusText(sender, "nether_death_max_remaining", plugin.getConfig().getString("nether_death_max_remaining", "6h"));
+
+        statusHeader(sender, "Misc");
+        statusNumber(sender, "border_margin_blocks", plugin.getConfig().getDouble("border_margin_blocks", 32.0));
+    }
+
+    private static void statusHeader(CommandSender sender, String title) {
+        sender.sendMessage(prefix()
+            .append(Component.text("== ", NamedTextColor.DARK_GRAY))
+            .append(Component.text(title, NamedTextColor.AQUA).decorate(TextDecoration.BOLD))
+            .append(Component.text(" ==", NamedTextColor.DARK_GRAY)));
+    }
+
+    private static void statusBool(CommandSender sender, String key, boolean value) {
+        sender.sendMessage(prefix()
+            .append(Component.text(key, NamedTextColor.GRAY))
+            .append(Component.text("=", NamedTextColor.DARK_GRAY))
+            .append(Component.text(String.valueOf(value), value ? NamedTextColor.GREEN : NamedTextColor.RED)));
+    }
+
+    private static void statusText(CommandSender sender, String key, String value) {
+        sender.sendMessage(prefix()
+            .append(Component.text(key, NamedTextColor.GRAY))
+            .append(Component.text("=", NamedTextColor.DARK_GRAY))
+            .append(Component.text(value, NamedTextColor.AQUA)));
+    }
+
+    private static void statusNumber(CommandSender sender, String key, double value) {
+        sender.sendMessage(prefix()
+            .append(Component.text(key, NamedTextColor.GRAY))
+            .append(Component.text("=", NamedTextColor.DARK_GRAY))
+            .append(Component.text(String.valueOf(value), NamedTextColor.GOLD)));
     }
 }

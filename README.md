@@ -6,6 +6,8 @@ By default, exile starts when a player dies in the Overworld: a lodestone + thei
 
 Optionally, if `nethernetherdeath_enabled=true`, exile can also start from a player's first death in the Nether.
 
+![Status](https://i.imgur.com/zw9GYCy.png)
+
 ## Features
 
 - **Death marker**

@@ -522,8 +522,8 @@ final class DeadService {
         UUID deadId = found.playerId;
         Player deadPlayer = Bukkit.getPlayer(deadId);
 
-        // Dead players cannot break their own marker.
-        if (breaker != null && breaker.getUniqueId().equals(deadId)) {
+        // Dead players cannot break their own marker unless they are OP.
+        if (breaker != null && breaker.getUniqueId().equals(deadId) && !breaker.isOp()) {
             if (messagesEnabled()) {
                 breaker.sendMessage(prefix().append(Component.text("You cannot revive yourself.", NamedTextColor.RED)));
             }
